@@ -1,3 +1,26 @@
+> **非官方 fork（Unofficial fork）** 本仓库 fork 自 [jgraph/drawio-desktop](https://github.com/jgraph/drawio-desktop)，增加了连接 DeepSeek 的能力。与 draw.io AG / JGraph Ltd 无隶属关系，也未获其背书；"draw.io"、"diagrams.net" 是各自权利人的商标。
+
+本 fork 的改动（DeepSeek 支持）
+------------------------------
+
+1. **放行 DeepSeek 端点**：在三条生效的 CSP 的 `connect-src` 中加入 `https://api.deepseek.com`
+   （[src/main/electron.js](src/main/electron.js)、[drawio/src/main/webapp/js/bootstrap.js](drawio/src/main/webapp/js/bootstrap.js)、
+   [drawio/src/main/webapp/js/diagramly/ElectronApp.js](drawio/src/main/webapp/js/diagramly/ElectronApp.js)）。
+   只放行这一个域名，其它外部地址仍然全部被 CSP 拦截。
+2. **预置 DeepSeek 提供方**：在 [drawio/src/main/webapp/js/PreConfig.js](drawio/src/main/webapp/js/PreConfig.js)
+   中通过 `DRAWIO_CONFIG` 把内置的 OpenAI 兼容 `gpt` 配置指向 `https://api.deepseek.com/chat/completions`，
+   模型为 `deepseek-flash` 与 `deepseek-v4-pro`。
+
+使用前请配置自己的 API key：把 `PreConfig.js` 里的 `window.DRAWIO_DEEPSEEK_API_KEY` 换成自己的 key
+（申请地址 <https://platform.deepseek.com/api_keys>），**不要把自己的 key 提交到仓库**；
+也可以保持该处为占位值，改为在应用内 **其他 → 配置** 里只填 `gptApiKey`
+（按键覆盖，`gptUrl` / `aiModels` 仍取自 PreConfig）。
+
+许可证：本仓库（桌面端外壳）为 **GPL-3.0-only**，见 [LICENSE](LICENSE)；
+`drawio/` 子模块（核心编辑器）为 **Apache-2.0**，见 [drawio/LICENSE](drawio/LICENSE)，
+其中被本 fork 修改过的文件已按 Apache-2.0 §4(b) 标注了修改说明。
+分发本 fork 的二进制时，请随包附带上述许可证文本并提供对应源码。
+
 About
 ----- 
 

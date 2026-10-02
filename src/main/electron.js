@@ -1,3 +1,13 @@
+/*
+ * Modified 2026-10-02 by baisongcode (unofficial DeepSeek fork,
+ * https://github.com/baisongcode/drawio-desktop): added https://api.deepseek.com
+ * to the Content-Security-Policy connect-src directive injected by the
+ * onHeadersReceived handler, so the DeepSeek AI endpoint preset in
+ * drawio/src/main/webapp/js/PreConfig.js is reachable. No other host was added.
+ *
+ * This file is part of draw.io Desktop and is licensed under GPL-3.0-only;
+ * see LICENSE.
+ */
 import fs from 'fs';
 import { promises as fsProm } from 'fs';
 import path from 'path';
@@ -998,7 +1008,11 @@ app.whenReady().then(() =>
 				// 'wasm-unsafe-eval' is required to compile the inlined libavoid WASM edge
 				// router; without it this header CSP overrides the more permissive meta CSP
 				// set in ElectronApp.js (the strictest of multiple policies wins)
-				'Content-Security-Policy': ['default-src \'self\'; script-src \'self\' \'wasm-unsafe-eval\'; connect-src \'self\'' +
+				// https://api.deepseek.com is allowed for the preset DeepSeek AI
+				// configuration in drawio/src/main/webapp/js/PreConfig.js. The
+				// renderer policies (js/bootstrap.js, js/diagramly/ElectronApp.js)
+				// list the same host or the strictest policy still blocks it
+				'Content-Security-Policy': ['default-src \'self\'; script-src \'self\' \'wasm-unsafe-eval\'; connect-src \'self\' https://api.deepseek.com' +
 				(isGoogleFontsEnabled? ' https://fonts.googleapis.com https://fonts.gstatic.com' : '') + '; img-src * data:; media-src *; font-src * data:; frame-src \'self\'; style-src \'self\' \'unsafe-inline\'' +
 				(isGoogleFontsEnabled? ' https://fonts.googleapis.com' : '') + '; base-uri \'none\';child-src \'self\';object-src \'none\';']
 			}
